@@ -1,0 +1,147 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: 'Cormorant Garamond', 'Georgia', serif;
+  --font-display: 'Cormorant Garamond', 'Georgia', serif;
+  --font-body: 'Jost', 'Inter', sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  /* Luxury chocolate palette */
+  --background: #f8f4ef;
+  --foreground: #1c0f08;
+  --card: #fffaf6;
+  --card-foreground: #1c0f08;
+  --primary: #2a1509;
+  --primary-foreground: #f8f4ef;
+  --secondary: #5c3317;
+  --secondary-foreground: #f8f4ef;
+  --accent: #b8922a;
+  --accent-foreground: #1c0f08;
+  --gold: #c9a84c;
+  --gold-light: #e4c76b;
+  --cream: #f8f4ef;
+  --cocoa: #3d1f0d;
+  --cocoa-dark: #1c0f08;
+  --muted: #ede5da;
+  --muted-foreground: #7a5c44;
+  --border: #e2d4c1;
+  --input: #e2d4c1;
+  --ring: #b8922a;
+  --destructive: #c0392b;
+  --radius: 0.25rem;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Jost', 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Luxury scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cocoa);
+  border-radius: 3px;
+}
+
+/* Gold shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #b8922a 0%,
+    #e4c76b 25%,
+    #c9a84c 50%,
+    #e4c76b 75%,
+    #b8922a 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Luxury divider */
+.luxury-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.luxury-divider::before,
+.luxury-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+/* Line clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
