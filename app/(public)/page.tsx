@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { Hero } from '@/components/hero'
 import { ProductCard } from '@/components/product-card'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 
 interface Product {
   id: string
@@ -73,7 +72,6 @@ const testimonials = [
 ]
 
 export default function Home() {
-  const searchParams = useSearchParams()
   const [featured, setFeatured] = useState<Product[]>([])
   const [bestsellers, setBestsellers] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
