@@ -11,28 +11,31 @@ export function Footer() {
 
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="mb-4">
-              <span
-                className="block text-lg tracking-[0.1em] uppercase font-semibold"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#c9a84c' }}
-              >
-                Chocolate Shopee
-              </span>
-              <span
-                className="block text-[9px] tracking-[0.3em] uppercase mt-0.5"
-                style={{ fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300, color: 'rgba(248,244,239,0.4)' }}
-              >
-                Bhagya Nagar Road, Nanded
-              </span>
+            <div className="mb-4 flex items-center gap-3">
+              <img src="/logo.png" alt="Chocolate Shopee" className="h-10 w-auto" />
+              <div>
+                <span
+                  className="block text-lg tracking-[0.1em] uppercase font-semibold"
+                  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#c9a84c' }}
+                >
+                  Chocolate Shopee
+                </span>
+                <span
+                  className="block text-[9px] tracking-[0.3em] uppercase mt-0.5"
+                  style={{ fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300, color: 'rgba(248,244,239,0.4)' }}
+                >
+                  Bhagya Nager T point, Nanded
+                </span>
+              </div>
             </div>
             <p
               className="text-sm leading-relaxed mb-6"
               style={{ color: 'rgba(248,244,239,0.6)', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}
             >
-              Nanded&apos;s favourite chocolate shop since 2001. Every brand, every flavour — all in one place on Bhagya Nagar Road.
+              Nanded's favourite chocolate shop since 2001. Every brand, every flavour — all in one place at Bhagya Nager T point, Nanded.
             </p>
             <a
-              href="https://wa.me/1234567890?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20chocolates%20at%20Chocolate%20Shopee%2C%20Nanded"
+              href="https://wa.me/919158882111?text=Hi%20there%2C%20I%20want%20to%20buy%20chocolates"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-xs tracking-[0.15em] uppercase py-2.5 px-5 border transition-all duration-300 hover:bg-[#c9a84c] hover:text-[#1c0f08]"
@@ -109,17 +112,17 @@ export function Footer() {
             </h4>
             <div className="space-y-3">
               <p className="text-sm" style={{ color: 'rgba(248,244,239,0.6)', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}>
-                <a href="mailto:hello@chocolateshopee.com" className="hover:text-[#c9a84c] transition-colors">
-                  hello@chocolateshopee.com
+                <a href="mailto:kshirsagarpramod.2012@gmail.com" className="hover:text-[#c9a84c] transition-colors">
+                  kshirsagarpramod.2012@gmail.com
                 </a>
               </p>
               <p className="text-sm" style={{ color: 'rgba(248,244,239,0.6)', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}>
-                <a href="tel:+911234567890" className="hover:text-[#c9a84c] transition-colors">
-                  +91 12345 67890
+                <a href="tel:+919158882111" className="hover:text-[#c9a84c] transition-colors">
+                  +91 91588 82111
                 </a>
               </p>
               <p className="text-sm leading-relaxed" style={{ color: 'rgba(248,244,239,0.6)', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}>
-                Bhagya Nagar Road,<br />
+                Bhagya Nager T point,<br />
                 Nanded, Maharashtra<br />
                 <span style={{ color: '#c9a84c', fontSize: 11, letterSpacing: '0.1em' }}>Open until 10:00 PM</span>
               </p>

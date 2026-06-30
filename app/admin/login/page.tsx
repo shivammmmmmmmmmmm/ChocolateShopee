@@ -161,7 +161,7 @@ export default function AdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@chocolateshoppee.com"
+                placeholder="chocolateshopee@gmail.com"
                 required
                 disabled={loading}
                 style={inputStyle}

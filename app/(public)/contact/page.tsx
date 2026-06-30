@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 
-const waLink = 'https://wa.me/1234567890?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20chocolates%20at%20Chocolate%20Shopee%2C%20Nanded'
+const waLink = 'https://wa.me/919158882111?text=Hi%20there%2C%20I%20want%20to%20buy%20chocolates'
 
 export default function ContactPage() {
   return (
@@ -39,7 +39,7 @@ export default function ContactPage() {
                   </svg>
                 ),
                 label: 'Address',
-                value: 'Bhagya Nagar Road, Nanded, Maharashtra',
+                value: 'Bhagya Nager T point, Nanded, Maharashtra',
                 href: 'https://maps.google.com/?q=Bhagya+Nagar+Road+Nanded',
               },
               {
@@ -60,7 +60,7 @@ export default function ContactPage() {
                   </svg>
                 ),
                 label: 'WhatsApp',
-                value: '+91 12345 67890',
+                value: '+91 91588 82111',
                 href: waLink,
               },
               {
@@ -71,8 +71,8 @@ export default function ContactPage() {
                   </svg>
                 ),
                 label: 'Email',
-                value: 'hello@chocolateshopee.com',
-                href: 'mailto:hello@chocolateshopee.com',
+                value: 'kshirsagarpramod.2012@gmail.com',
+                href: 'mailto:kshirsagarpramod.2012@gmail.com',
               },
             ].map((item, i) => (
               <motion.div
@@ -118,14 +118,14 @@ export default function ContactPage() {
             style={{ border: '1px solid #e2d4c1' }}
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30334.47!2d77.3057!3d19.1639!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd1d7f48aa3ee51%3A0x2cc5c3f5d5b4d3c!2sNanded%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30334.47!2d77.30863196674812!3d19.177847606799315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd1d7f48aa3ee51%3A0x2cc5c3f5d5b4d3c!2sChocolate%20Shopee%2C%20Bhagya%20Nager%20T%20point%2C%20Nanded!5e0!3m2!1sen!2sin!4v1" 
               width="100%"
               height="380"
               style={{ border: 0, display: 'block', filter: 'sepia(20%) contrast(95%)' }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Chocolate Shopee Location — Bhagya Nagar Road, Nanded"
+              title="Chocolate Shopee Location — Bhagya Nager T point, Nanded"
             />
           </motion.div>
 

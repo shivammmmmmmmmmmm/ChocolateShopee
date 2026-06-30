@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { useCart } from '@/lib/cart-context'
 
 interface ProductCardProps {
   id: string
@@ -18,6 +19,16 @@ interface ProductCardProps {
 
 export function ProductCard({ id, name, description, price, image, category, bestseller, featured }: ProductCardProps) {
   const [imgError, setImgError] = useState(false)
+  const [added, setAdded] = useState(false)
+  const { addItem } = useCart()
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    addItem({ id, name, price, image, description })
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
+  }
 
   return (
     <motion.div
@@ -25,11 +36,11 @@ export function ProductCard({ id, name, description, price, image, category, bes
       transition={{ duration: 0.35, ease: 'easeOut' }}
       className="group"
     >
-      <Link href={`/products/${id}`}>
-        <div
-          className="overflow-hidden h-full"
-          style={{ background: '#fffaf6', border: '1px solid #e2d4c1' }}
-        >
+      <div
+        className="overflow-hidden h-full flex flex-col"
+        style={{ background: '#fffaf6', border: '1px solid #e2d4c1' }}
+      >
+        <Link href={`/products/${id}`}>
           {/* Image container */}
           <div className="relative overflow-hidden" style={{ aspectRatio: '4/3', background: '#f0e8da' }}>
             {image && !imgError ? (
@@ -37,8 +48,9 @@ export function ProductCard({ id, name, description, price, image, category, bes
                 src={image}
                 alt={name}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                className="object-contain transition-transform duration-700 group-hover:scale-105"
                 onError={() => setImgError(true)}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             ) : (
               <div
@@ -92,9 +104,11 @@ export function ProductCard({ id, name, description, price, image, category, bes
               )}
             </div>
           </div>
+        </Link>
 
-          {/* Content */}
-          <div className="p-5">
+        {/* Content */}
+        <div className="p-5 flex flex-col flex-1">
+          <Link href={`/products/${id}`} className="flex-1">
             {category && (
               <span
                 className="text-xs tracking-[0.2em] uppercase mb-2 block"
@@ -118,7 +132,7 @@ export function ProductCard({ id, name, description, price, image, category, bes
               {description}
             </p>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-4">
               <span
                 className="text-2xl font-semibold"
                 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#1c0f08' }}
@@ -136,9 +150,24 @@ export function ProductCard({ id, name, description, price, image, category, bes
                 </svg>
               </motion.span>
             </div>
-          </div>
+          </Link>
+
+          {/* Add to Cart Button */}
+          <motion.button
+            onClick={handleAddToCart}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full py-3 text-xs tracking-[0.2em] uppercase font-semibold transition-all duration-300"
+            style={{
+              background: added ? '#25D366' : '#1c0f08',
+              color: '#f8f4ef',
+              fontFamily: 'Jost, Inter, sans-serif',
+            }}
+          >
+            {added ? '✓ Added to Cart' : 'Add to Cart'}
+          </motion.button>
         </div>
-      </Link>
+      </div>
     </motion.div>
   )
 }

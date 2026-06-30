@@ -6,24 +6,21 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Seeding database...')
 
-  // Create categories
-  const darkChocolate = await prisma.category.upsert({
-    where: { name: 'Dark Chocolate' },
-    update: {},
-    create: { name: 'Dark Chocolate' }
-  })
+  // Create categories matching the home page sections
+  const categories = [
+    { name: 'Chocolates' },
+    { name: 'Imported Chocolates' },
+    { name: 'Gift Hampers' },
+    { name: 'Beverages' },
+  ]
 
-  const milkChocolate = await prisma.category.upsert({
-    where: { name: 'Milk Chocolate' },
-    update: {},
-    create: { name: 'Milk Chocolate' }
-  })
-
-  const specialty = await prisma.category.upsert({
-    where: { name: 'Specialty' },
-    update: {},
-    create: { name: 'Specialty' }
-  })
+  for (const cat of categories) {
+    await prisma.category.upsert({
+      where: { name: cat.name },
+      update: {},
+      create: cat,
+    })
+  }
 
   // Create sample products
   await prisma.product.upsert({
@@ -35,9 +32,10 @@ async function main() {
       details: 'Our signature dark chocolate blend. Made with premium Venezuelan cacao. 100g bar.\nTasting notes: Deep cocoa, subtle fruit undertones\nPerfect for: Chocolate connoisseurs',
       price: 14.99,
       image: 'https://images.unsplash.com/photo-1599599810694-b5ac4dd64856?w=500&h=500&fit=crop',
-      categoryId: darkChocolate.id,
+      categoryId: (await prisma.category.findUnique({ where: { name: 'Chocolates' } }))!.id,
       featured: true,
-      inStock: true
+      bestseller: true,
+      inStock: true,
     }
   })
 
@@ -50,83 +48,110 @@ async function main() {
       details: 'Classic milk chocolate with Belgian cocoa butter. 100g bar.\nTasting notes: Creamy, sweet, buttery\nPerfect for: Everyone, especially chocolate lovers',
       price: 12.99,
       image: 'https://images.unsplash.com/photo-1585071429691-6a34715db3f0?w=500&h=500&fit=crop',
-      categoryId: milkChocolate.id,
+      categoryId: (await prisma.category.findUnique({ where: { name: 'Chocolates' } }))!.id,
       featured: true,
-      inStock: true
+      bestseller: true,
+      inStock: true,
     }
   })
 
   await prisma.product.upsert({
-    where: { name: 'Raspberry Truffle' },
+    where: { name: 'Ferrero Rocher 24pc' },
     update: {},
     create: {
-      name: 'Raspberry Truffle',
-      description: 'Dark chocolate truffle filled with tart raspberry ganache',
-      details: 'Handmade truffle with real raspberry puree. Box of 4.\nTasting notes: Dark chocolate shell, bright raspberry center\nPerfect for: Special occasions, gifts',
-      price: 16.99,
-      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&h=500&fit=crop',
-      categoryId: specialty.id,
+      name: 'Ferrero Rocher 24pc',
+      description: 'Premium imported Italian chocolates with hazelnut filling',
+      details: 'Imported from Italy. 24 pieces in elegant packaging.\nPerfect for: Gifting and special occasions',
+      price: 49.99,
+      image: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=500&h=500&fit=crop',
+      categoryId: (await prisma.category.findUnique({ where: { name: 'Imported Chocolates' } }))!.id,
       featured: true,
-      inStock: true
+      bestseller: true,
+      inStock: true,
     }
   })
 
   await prisma.product.upsert({
-    where: { name: 'Sea Salt Caramel' },
+    where: { name: 'Lindt Swiss Chocolate Box' },
     update: {},
     create: {
-      name: 'Sea Salt Caramel',
-      description: 'Sweet caramel infused with sea salt crystals, wrapped in dark chocolate',
-      details: 'Artisanal caramel with Maldon sea salt. Box of 6.\nTasting notes: Sweet, salty, luxurious\nPerfect for: Caramel and chocolate lovers',
-      price: 18.99,
-      image: 'https://images.unsplash.com/photo-1599599810404-eb0a0ad3629f?w=500&h=500&fit=crop',
-      categoryId: specialty.id,
+      name: 'Lindt Swiss Chocolate Box',
+      description: 'Assorted Swiss luxury chocolates from Lindt',
+      details: 'Premium Swiss chocolate assortment. 200g box.\nTasting notes: Smooth, creamy, world-class quality',
+      price: 34.99,
+      image: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=500&h=500&fit=crop',
+      categoryId: (await prisma.category.findUnique({ where: { name: 'Imported Chocolates' } }))!.id,
       featured: true,
-      inStock: true
+      inStock: true,
     }
   })
 
   await prisma.product.upsert({
-    where: { name: 'Espresso Dark Chocolate' },
+    where: { name: 'Luxury Gift Hamper' },
     update: {},
     create: {
-      name: 'Espresso Dark Chocolate',
-      description: 'Premium dark chocolate infused with single-origin espresso beans',
-      details: 'Fair-trade dark chocolate with Ethiopian espresso. 100g bar.\nTasting notes: Rich coffee, dark chocolate depth\nPerfect for: Coffee and chocolate enthusiasts',
-      price: 15.99,
-      image: 'https://images.unsplash.com/photo-1599599810232-b0550ba96a95?w=500&h=500&fit=crop',
-      categoryId: darkChocolate.id,
+      name: 'Luxury Gift Hamper',
+      description: 'Curated gift box with assorted premium chocolates & treats',
+      details: 'Beautifully wrapped hamper with Ferrero, Lindt, Cadbury & more.\nPerfect for: Birthdays, anniversaries, Diwali, weddings',
+      price: 89.99,
+      image: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=500&h=500&fit=crop',
+      categoryId: (await prisma.category.findUnique({ where: { name: 'Gift Hampers' } }))!.id,
+      featured: true,
+      bestseller: true,
+      inStock: true,
+    }
+  })
+
+  await prisma.product.upsert({
+    where: { name: 'Red Bull Energy Drink 4x250ml' },
+    update: {},
+    create: {
+      name: 'Red Bull Energy Drink 4x250ml',
+      description: 'Original Red Bull energy drink, pack of 4 cans',
+      details: 'The world-famous energy drink. 4 cans of 250ml each.\nPerfect for: Energy boost, parties, refreshment',
+      price: 8.99,
+      image: 'https://images.unsplash.com/photo-1622484212046-77b2c0834fbb?w=500&h=500&fit=crop',
+      categoryId: (await prisma.category.findUnique({ where: { name: 'Beverages' } }))!.id,
+      featured: true,
+      bestseller: true,
+      inStock: true,
+    }
+  })
+
+  await prisma.product.upsert({
+    where: { name: 'Cadbury Celebrations Pack' },
+    update: {},
+    create: {
+      name: 'Cadbury Celebrations Pack',
+      description: 'Assorted Cadbury chocolates for every celebration',
+      details: 'Festive pack with Dairy Milk, Silk, 5 Star, Gems & more. 450g.\nPerfect for: Festivals, gifting, parties',
+      price: 24.99,
+      image: 'https://images.unsplash.com/photo-1587139223877-04cb899fa3e8?w=500&h=500&fit=crop',
+      categoryId: (await prisma.category.findUnique({ where: { name: 'Chocolates' } }))!.id,
       featured: false,
-      inStock: true
+      bestseller: true,
+      inStock: true,
     }
   })
 
-  await prisma.product.upsert({
-    where: { name: 'Lavender Milk Chocolate' },
-    update: {},
-    create: {
-      name: 'Lavender Milk Chocolate',
-      description: 'Delicate milk chocolate with fragrant lavender flavor',
-      details: 'Smooth milk chocolate with dried Provençal lavender. 100g bar.\nTasting notes: Floral, creamy, subtle\nPerfect for: Those seeking floral and flavorful experiences',
-      price: 13.99,
-      image: 'https://images.unsplash.com/photo-1599599810344-d26e20d12d35?w=500&h=500&fit=crop',
-      categoryId: milkChocolate.id,
-      featured: false,
-      inStock: true
-    }
-  })
-
-  // Create default admin account
-  const hashedPassword = await bcryptjs.hash('admin123', 10)
+  // Create default admin account with specified credentials
+  const hashedPassword = await bcryptjs.hash('CS@123', 10)
   
   await prisma.admin.upsert({
-    where: { email: 'admin@luxe.com' },
+    where: { email: 'chocolateshopee@gmail.com' },
     update: {},
     create: {
-      email: 'admin@luxe.com',
-      password: hashedPassword
+      email: 'chocolateshopee@gmail.com',
+      password: hashedPassword,
     }
   })
+
+  // Delete old admin account if exists
+  try {
+    await prisma.admin.delete({ where: { email: 'admin@luxe.com' } })
+  } catch {
+    // ignore if not found
+  }
 
   // Create homepage content
   await prisma.homepageContent.upsert({

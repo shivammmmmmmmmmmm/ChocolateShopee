@@ -1,10 +1,11 @@
-'use client'
+"use client"
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useCart } from '@/lib/cart-context'
 
 interface Product {
   id: string
@@ -25,6 +26,8 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [imgError, setImgError] = useState(false)
+  const [added, setAdded] = useState(false)
+  const { addItem } = useCart()
 
   useEffect(() => {
     if (!id) return
@@ -199,8 +202,8 @@ export default function ProductDetailPage() {
               {product.description}
             </p>
 
-            {/* WhatsApp Order */}
-            <div className="mb-10">
+            {/* Add to Cart + WhatsApp Order */}
+            <div>
               <a
                 href={`https://wa.me/1234567890?text=${waMessage}`}
                 target="_blank"
@@ -252,7 +255,7 @@ export default function ProductDetailPage() {
             <div className="space-y-3">
               {[
                 'Genuine branded product — 100% authentic',
-                'Available in-store at Bhagya Nagar Road, Nanded',
+                'Available in-store at Bhagya Nager T point, Nanded',
                 'Perfect for gifting — gift wrap available',
                 'Open daily until 10:00 PM for last-minute buys',
               ].map((item) => (

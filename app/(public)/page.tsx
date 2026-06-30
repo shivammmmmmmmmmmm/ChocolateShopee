@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Hero } from '@/components/hero'
 import { ProductCard } from '@/components/product-card'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 interface Product {
   id: string
@@ -54,7 +55,7 @@ const testimonials = [
   {
     name: 'Priya Sharma',
     location: 'Nanded',
-    text: 'Best chocolate shop in Nanded, hands down. They have every brand I can think of and the gift boxes are gorgeous. My go-to for every occasion.',
+    text: ' chocolate shop in Nanded, hands down. They have every brand I can think of and the gift boxes are gorgeous. My go-to for every occasion.',
     rating: 5,
   },
   {
@@ -72,25 +73,32 @@ const testimonials = [
 ]
 
 export default function Home() {
+  const searchParams = useSearchParams()
   const [featured, setFeatured] = useState<Product[]>([])
   const [bestsellers, setBestsellers] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch('/api/products')
-        const data = await res.json()
-        const products = Array.isArray(data) ? data : []
+        const [productsRes, categoriesRes] = await Promise.all([
+          fetch('/api/products'),
+          fetch('/api/categories'),
+        ])
+        const productsData = await productsRes.json()
+        const categoriesData = await categoriesRes.json()
+        const products = Array.isArray(productsData) ? productsData : []
         setFeatured(products.filter((p: Product) => p.featured).slice(0, 6))
         setBestsellers(products.filter((p: Product) => p.bestseller).slice(0, 4))
+        setCategories(Array.isArray(categoriesData) ? categoriesData : [])
       } catch {
         // silently fail
       } finally {
         setLoading(false)
       }
     }
-    fetchProducts()
+    fetchData()
   }, [])
 
   return (
@@ -114,14 +122,14 @@ export default function Home() {
               className="text-xs tracking-[0.3em] uppercase"
               style={{ color: '#1c0f08', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 600 }}
             >
-              Cadbury · Ferrero · Lindt · Toblerone &nbsp;&nbsp;✦&nbsp;&nbsp; Gift Hampers Available &nbsp;&nbsp;✦&nbsp;&nbsp; Open Until 10:00 PM &nbsp;&nbsp;✦&nbsp;&nbsp; Bhagya Nagar Road, Nanded &nbsp;&nbsp;✦&nbsp;&nbsp; 23 Years of Trust &nbsp;&nbsp;✦&nbsp;&nbsp;
+              Cadbury · Ferrero · Lindt · Toblerone &nbsp;&nbsp;✦&nbsp;&nbsp; Gift Hampers Available &nbsp;&nbsp;✦&nbsp;&nbsp; Open Until 10:00 PM &nbsp;&nbsp;✦&nbsp;&nbsp; Bhagya Nager T point, Nanded &nbsp;&nbsp;✦&nbsp;&nbsp; 23 Years of Trust &nbsp;&nbsp;✦&nbsp;&nbsp;
             </span>
           ))}
         </motion.div>
       </div>
 
       {/* COLLECTIONS INTRO */}
-      <section className="py-24 md:py-36 px-6 lg:px-12 max-w-7xl mx-auto">
+      <section className="py-16 md:py-24 px-6 lg:px-12 max-w-7xl mx-auto">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -156,128 +164,151 @@ export default function Home() {
         </motion.div>
 
         {/* Category Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { title: 'Dark Chocolate', subtitle: 'Bold & Intense', gradient: 'linear-gradient(135deg, #1c0f08 0%, #3d1f0d 100%)', emoji: '🍫' },
-            { title: 'Milk Chocolate', subtitle: 'Smooth & Classic', gradient: 'linear-gradient(135deg, #5c3317 0%, #8b5e3c 100%)', emoji: '🍬' },
-            { title: 'Gift Hampers', subtitle: 'For Every Occasion', gradient: 'linear-gradient(135deg, #3d1f0d 0%, #6b3a1f 100%)', emoji: '🎁' },
-          ].map((cat, i) => (
-            <motion.div
-              key={cat.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-            >
-              <Link href="/products">
-                <motion.div
-                  whileHover={{ y: -6, scale: 1.01 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative overflow-hidden cursor-pointer"
-                  style={{ background: cat.gradient, aspectRatio: '3/4' }}
-                >
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
-                    <div className="text-6xl mb-6 opacity-20">{cat.emoji}</div>
-                    <h3
-                      className="text-3xl font-semibold mb-2"
-                      style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#f8f4ef' }}
-                    >
-                      {cat.title}
-                    </h3>
-                    <p
-                      className="text-xs tracking-[0.25em] uppercase mb-8"
-                      style={{ color: '#c9a84c', fontFamily: 'Jost, Inter, sans-serif' }}
-                    >
-                      {cat.subtitle}
-                    </p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {categories.length > 0 ? (
+            categories.map((cat, i) => (
+              <motion.div
+                key={cat.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+              >
+                <Link href={`/products?category=${cat.id}`}>
+                  <motion.div
+                    whileHover={{ y: -6, scale: 1.01 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative overflow-hidden cursor-pointer"
+                    style={{ aspectRatio: '3/4' }}
+                  >
+                    {/* Background Image */}
                     <div
-                      className="px-6 py-2.5 text-xs tracking-[0.2em] uppercase border transition-all duration-300 hover:bg-[#c9a84c] hover:border-[#c9a84c] hover:text-[#1c0f08]"
-                      style={{ borderColor: 'rgba(201,168,76,0.5)', color: '#f8f4ef', fontFamily: 'Jost, Inter, sans-serif' }}
-                    >
-                      Explore
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{
+                        backgroundImage: i === 0
+                          ? 'url(https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80)'
+                          : i === 1
+                          ? 'url(https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&q=80)'
+                          : i === 2
+                          ? 'url(https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80)'
+                          : 'url(/bevrages.png)'
+                      }}
+                    />
+                    {/* Overlay Gradient */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background: i === 0
+                          ? 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)'
+                          : i === 1
+                          ? 'linear-gradient(135deg, rgba(60,30,10,0.7) 0%, rgba(120,60,30,0.7) 100%)'
+                          : i === 2
+                          ? 'linear-gradient(135deg, rgba(61,31,13,0.7) 0%, rgba(107,58,31,0.7) 100%)'
+                          : 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)'
+                      }}
+                    />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+                      <h3
+                        className="text-3xl font-semibold mb-2"
+                        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#f8f4ef' }}
+                      >
+                        {cat.name}
+                      </h3>
+                      <p
+                        className="text-xs tracking-[0.25em] uppercase mb-8"
+                        style={{ color: '#c9a84c', fontFamily: 'Jost, Inter, sans-serif' }}
+                      >
+                        {i === 0 ? 'Bold & Intense' : i === 1 ? 'Premium Selection' : i === 2 ? 'For Every Occasion' : 'Energy & Cold Drinks'}
+                      </p>
+                      <div
+                        className="px-6 py-2.5 text-xs tracking-[0.2em] uppercase border transition-all duration-300 hover:bg-[#c9a84c] hover:border-[#c9a84c] hover:text-[#1c0f08]"
+                        style={{ borderColor: 'rgba(201,168,76,0.5)', color: '#f8f4ef', fontFamily: 'Jost, Inter, sans-serif' }}
+                      >
+                        Explore
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* FEATURED PRODUCTS */}
-      <section className="py-24 md:py-32 px-6 lg:px-12" style={{ background: '#1c0f08' }}>
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6"
-          >
-            <div>
-              <div className="flex items-center gap-4 mb-4">
-                <div style={{ width: 40, height: 1, background: '#c9a84c' }} />
-                <span
-                  className="text-xs tracking-[0.35em] uppercase"
-                  style={{ color: '#c9a84c', fontFamily: 'Jost, Inter, sans-serif' }}
-                >
-                  Hand-Selected
-                </span>
-              </div>
-              <h2
-                className="text-5xl md:text-6xl font-semibold"
-                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#f8f4ef' }}
-              >
-                Featured <em>Products</em>
-              </h2>
-            </div>
-            <Link href="/products">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                className="px-8 py-3 text-xs tracking-[0.2em] uppercase border transition-all duration-300 hover:bg-[#c9a84c] hover:text-[#1c0f08] hover:border-[#c9a84c]"
-                style={{ borderColor: 'rgba(201,168,76,0.5)', color: '#c9a84c', fontFamily: 'Jost, Inter, sans-serif' }}
-              >
-                View All
-              </motion.button>
-            </Link>
-          </motion.div>
-
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="animate-pulse" style={{ height: 380, background: 'rgba(255,255,255,0.05)', borderRadius: 2 }} />
-              ))}
-            </div>
-          ) : featured.length > 0 ? (
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {featured.map((product) => (
-                <motion.div key={product.id} variants={fadeUp}>
-                  <ProductCard {...product} />
-                </motion.div>
-              ))}
-            </motion.div>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            ))
           ) : (
-            <div className="text-center py-20">
-              <p style={{ color: 'rgba(248,244,239,0.4)', fontFamily: 'Jost, Inter, sans-serif' }}>
-                Products coming soon.
-              </p>
-            </div>
+            // Fallback to static categories if API fails
+            [
+              { title: 'Chocolates', subtitle: 'Bold & Intense', bg: 'url(https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80)', gradient: 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)' },
+              { title: 'Imported Chocolates', subtitle: 'Premium Selection', bg: 'url(https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&q=80)', gradient: 'linear-gradient(135deg, rgba(60,30,10,0.7) 0%, rgba(120,60,30,0.7) 100%)' },
+              { title: 'Gift Hampers', subtitle: 'For Every Occasion', bg: 'url(https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80)', gradient: 'linear-gradient(135deg, rgba(61,31,13,0.7) 0%, rgba(107,58,31,0.7) 100%)' },
+              { title: 'Beverages', subtitle: 'Energy & Cold Drinks', bg: 'url(/bevrages.png)', gradient: 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)' },
+            ].map((cat, i) => (
+              <motion.div
+                key={cat.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+              >
+                <Link href="/products">
+                  <motion.div
+                    whileHover={{ y: -6, scale: 1.01 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative overflow-hidden cursor-pointer"
+                    style={{ aspectRatio: '3/4' }}
+                  >
+                    {/* Background Image */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: cat.bg }}
+                    />
+                    {/* Overlay Gradient */}
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: cat.gradient }}
+                    />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+                      <h3
+                        className="text-3xl font-semibold mb-2"
+                        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#f8f4ef' }}
+                      >
+                        {cat.title}
+                      </h3>
+                      <p
+                        className="text-xs tracking-[0.25em] uppercase mb-8"
+                        style={{ color: '#c9a84c', fontFamily: 'Jost, Inter, sans-serif' }}
+                      >
+                        {cat.subtitle}
+                      </p>
+                      <div
+                        className="px-6 py-2.5 text-xs tracking-[0.2em] uppercase border transition-all duration-300 hover:bg-[#c9a84c] hover:border-[#c9a84c] hover:text-[#1c0f08]"
+                        style={{ borderColor: 'rgba(201,168,76,0.5)', color: '#f8f4ef', fontFamily: 'Jost, Inter, sans-serif' }}
+                      >
+                        Explore
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            ))
           )}
         </div>
       </section>
 
+
       {/* STORY SECTION */}
       <section
-        className="py-24 md:py-36 px-6 lg:px-12 relative overflow-hidden"
-        style={{ background: '#f8f4ef' }}
+        className="py-16 md:py-24 px-6 lg:px-12 relative overflow-hidden"
+        style={{ 
+          background: 'url(/bg.png) center/cover no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
       >
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        {/* Overlay for text readability */}
+        <div 
+          className="absolute inset-0"
+          style={{ 
+            background: 'linear-gradient(135deg, rgba(248,244,239,0.75) 0%, rgba(248,244,239,0.70) 100%)'
+          }}
+        />
+        
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -301,17 +332,17 @@ export default function Home() {
             </h2>
             <p
               className="text-lg leading-relaxed mb-6"
-              style={{ color: '#7a5c44', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}
+              style={{ color: '#1c0f08', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 400 }}
             >
-              Chocolate Shopee has been Nanded&apos;s most loved chocolate destination for over 23 years. 
-              Located on Bhagya Nagar Road, we stock every major brand — from Cadbury and Ferrero Rocher 
+              Chocolate Shopee has been Nanded's most loved chocolate destination for over 23 years. 
+              Located on Bhagya Nager T point, we stock every major brand — from Cadbury and Ferrero Rocher
               to Lindt, Toblerone, Kinder, and rare imported varieties.
             </p>
             <p
               className="text-lg leading-relaxed mb-10"
-              style={{ color: '#7a5c44', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}
+              style={{ color: '#1c0f08', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 400 }}
             >
-              Whether you&apos;re picking up a casual treat or looking for a stunning gift hamper, 
+              Whether you're picking up a casual treat or looking for a stunning gift hamper, 
               we have everything you need — and we stay open until 10 PM every day.
             </p>
             <Link href="/about">
@@ -425,10 +456,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* BESTSELLERS */}
+      {/* BESTSELLERS - MARQUEE STYLE */}
       {bestsellers.length > 0 && (
-        <section className="py-24 md:py-32 px-6 lg:px-12" style={{ background: '#f8f4ef' }}>
-          <div className="max-w-7xl mx-auto">
+        <section 
+          className="py-24 md:py-32 px-6 lg:px-12 relative overflow-hidden"
+          style={{ 
+            background: 'url(/bestsellers bg.png) center/cover no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        >
+          {/* Overlay for text readability */}
+          <div 
+            className="absolute inset-0"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(248,244,239,0.65) 0%, rgba(248,244,239,0.60) 100%)'
+            }}
+          />
+          
+          <div className="relative z-10">
+            {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -453,19 +499,48 @@ export default function Home() {
                 Best <em>Sellers</em>
               </h2>
             </motion.div>
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            >
-              {bestsellers.map((product) => (
-                <motion.div key={product.id} variants={fadeUp}>
-                  <ProductCard {...product} />
-                </motion.div>
-              ))}
-            </motion.div>
+
+            {/* Marquee Container */}
+            <div className="relative overflow-hidden">
+              {/* Fade edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-32 z-10" style={{ background: 'linear-gradient(to right, rgba(248,244,239,0.9) 0%, transparent 100%)' }} />
+              <div className="absolute right-0 top-0 bottom-0 w-32 z-10" style={{ background: 'linear-gradient(to left, rgba(248,244,239,0.9) 0%, transparent 100%)' }} />
+              
+              {/* Scrolling Marquee */}
+              <motion.div
+                className="flex gap-6"
+                animate={{ x: [0, -1200] }}
+                transition={{
+                  x: {
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    duration: 30,
+                    ease: "linear"
+                  }
+                }}
+              >
+                {/* First set */}
+                {bestsellers.map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0"
+                    style={{ width: '280px' }}
+                  >
+                    <ProductCard {...product} />
+                  </div>
+                ))}
+                {/* Duplicate set for seamless loop */}
+                {bestsellers.map((product) => (
+                  <div
+                    key={`dup-${product.id}`}
+                    className="flex-shrink-0"
+                    style={{ width: '280px' }}
+                  >
+                    <ProductCard {...product} />
+                  </div>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </section>
       )}
@@ -579,13 +654,13 @@ export default function Home() {
                 </motion.button>
               </Link>
               <a
-                href="https://wa.me/1234567890?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20chocolates%20at%20Chocolate%20Shopee%2C%20Nanded"
+                href="https://wa.me/919158882111?text=Hi%20there%2C%20I%20want%20to%20buy%20chocolates"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <motion.button
                   whileHover={{ scale: 1.03 }}
-                  className="px-10 py-4 text-xs tracking-[0.25em] uppercase border flex items-center gap-2 transition-all duration-300 hover:bg-[#1c0f08] hover:text-[#f8f4ef]"
+                  className="px-10 py-4 text-xs tracking-[0.25em] uppercase border flex items-center gap-2 transition-all duration-300 hover:bg-[#25D366] hover:text-white hover:border-[#25D366]"
                   style={{ borderColor: '#1c0f08', color: '#1c0f08', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 400 }}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">

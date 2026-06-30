@@ -3,8 +3,8 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Chocolate Shopee — Nanded\'s Favourite Chocolate Store',
-  description: 'Nanded\'s most loved chocolate shop since 2001. Cadbury, Ferrero, Lindt, Toblerone, gift hampers & more. Bhagya Nagar Road, Nanded. Open until 10 PM.',
-  keywords: ['chocolate shop Nanded', 'Cadbury Nanded', 'Ferrero Rocher', 'gift hamper Nanded', 'chocolate store', 'Bhagya Nagar Road'],
+  description: 'Nanded\'s most loved chocolate shop since 2001. Cadbury, Ferrero, Lindt, Toblerone, gift hampers & more. Bhagya Nager T point, Nanded. Open until 10 PM.',
+  keywords: ['chocolate shop Nanded', 'Cadbury Nanded', 'Ferrero Rocher', 'gift hamper Nanded', 'chocolate store', 'Bhagya Nager T point'],
   openGraph: {
     title: 'Chocolate Shopee — Nanded\'s Favourite Chocolate Store',
     description: 'Nanded\'s most loved chocolate shop since 2001. All top brands, gift hampers, open until 10 PM.',
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
     siteName: 'Chocolate Shopee, Nanded',
   },
   icons: {
-    icon: '/icon.svg',
-    apple: '/apple-icon.png',
+    icon: '/logo.png',
+    apple: '/logo.png',
   },
 }
 

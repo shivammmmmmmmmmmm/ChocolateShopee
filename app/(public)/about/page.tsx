@@ -36,8 +36,22 @@ export default function AboutPage() {
       </div>
 
       {/* Story Section */}
-      <section className="py-24 md:py-32 px-6 lg:px-12">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <section 
+        className="py-24 md:py-32 px-6 lg:px-12 relative overflow-hidden"
+        style={{ 
+          background: 'url(/bestsellers bg.png) center/cover no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        {/* Overlay for text readability */}
+        <div 
+          className="absolute inset-0"
+          style={{ 
+            background: 'linear-gradient(135deg, rgba(248,244,239,0.65) 0%, rgba(248,244,239,0.60) 100%)'
+          }}
+        />
+        
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
           <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.9 }}>
             <div className="flex items-center gap-4 mb-6">
               <div style={{ width: 40, height: 1, background: '#c9a84c' }} />
@@ -46,13 +60,13 @@ export default function AboutPage() {
               </span>
             </div>
             <h2 className="text-5xl font-semibold mb-8 leading-tight" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#1c0f08' }}>
-              Nanded&apos;s Most Loved <em>Chocolate Shop</em>
+              Nanded's Most Loved <em>Chocolate Shop</em>
             </h2>
             <p className="text-lg leading-relaxed mb-6" style={{ color: '#7a5c44', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}>
-              Chocolate Shopee opened its doors on Bhagya Nagar Road, Nanded in 2001 with a simple mission: bring the world&apos;s best chocolates to one place. Over two decades later, we remain the city&apos;s most trusted destination for chocolate lovers of all ages.
+              Chocolate Shopee opened its doors on Bhagya Nager T point, Nanded in 2001 with a simple mission: bring the world's best chocolates to one place. Over two decades later, we remain the city's most trusted destination for chocolate lovers of all ages.
             </p>
             <p className="text-lg leading-relaxed" style={{ color: '#7a5c44', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}>
-              From iconic Indian brands like Cadbury and Amul to international favourites like Ferrero Rocher, Lindt, Toblerone, Kinder, and more — our shelves carry hundreds of varieties so you always find exactly what you&apos;re looking for.
+              From iconic Indian brands like Cadbury and Amul to international favourites like Ferrero Rocher, Lindt, Toblerone, Kinder, and more — our shelves carry hundreds of varieties so you always find exactly what you're looking for.
             </p>
           </motion.div>
 
@@ -83,7 +97,7 @@ export default function AboutPage() {
       <section className="py-12 px-6 lg:px-12" style={{ background: '#c9a84c' }}>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           {[
-            { icon: '📍', label: 'Location', value: 'Bhagya Nagar Road, Nanded' },
+            { icon: '📍', label: 'Location', value: 'Bhagya Nager T point, Nanded' },
             { icon: '🕙', label: 'Hours', value: 'Open Until 10:00 PM Daily' },
             { icon: '📅', label: 'Est.', value: '2001 — 23 Years in Business' },
           ].map((item) => (
@@ -139,7 +153,7 @@ export default function AboutPage() {
             Visit Us or <em>Order Online</em>
           </h2>
           <p className="text-lg mb-10 max-w-xl mx-auto" style={{ color: '#7a5c44', fontFamily: 'Jost, Inter, sans-serif', fontWeight: 300 }}>
-            Come find us on Bhagya Nagar Road, Nanded — or WhatsApp us to check availability and place an order.
+            Come find us on Bhagya Nager T point, Nanded — or WhatsApp us to check availability and place an order.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/products">

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductCard } from '@/components/product-card'
+import { useSearchParams } from 'next/navigation'
 
 interface Product {
   id: string
@@ -22,6 +23,7 @@ interface Category {
 }
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
@@ -48,6 +50,14 @@ export default function ProductsPage() {
     }
     fetchData()
   }, [])
+
+  // Update selected category when URL parameter changes
+  useEffect(() => {
+    const categoryParam = searchParams.get('category')
+    if (categoryParam) {
+      setSelectedCategory(categoryParam)
+    }
+  }, [searchParams])
 
   const filteredProducts = products.filter((p) => {
     const matchCat = selectedCategory === 'all' || p.categoryId === selectedCategory
