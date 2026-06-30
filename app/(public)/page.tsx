@@ -79,6 +79,42 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([])
 
+  // Helper function to get category styling based on name
+  const getCategoryStyle = (name: string) => {
+    const lowerName = name.toLowerCase()
+    if (lowerName.includes('chocolate') && !lowerName.includes('imported')) {
+      return {
+        bg: 'url(https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80)',
+        gradient: 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)',
+        subtitle: 'Bold & Intense'
+      }
+    } else if (lowerName.includes('imported')) {
+      return {
+        bg: 'url(https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&q=80)',
+        gradient: 'linear-gradient(135deg, rgba(60,30,10,0.7) 0%, rgba(120,60,30,0.7) 100%)',
+        subtitle: 'Premium Selection'
+      }
+    } else if (lowerName.includes('gift') || lowerName.includes('hamper')) {
+      return {
+        bg: 'url(https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80)',
+        gradient: 'linear-gradient(135deg, rgba(61,31,13,0.7) 0%, rgba(107,58,31,0.7) 100%)',
+        subtitle: 'For Every Occasion'
+      }
+    } else if (lowerName.includes('beverage') || lowerName.includes('drink')) {
+      return {
+        bg: 'url(/bevrages.png)',
+        gradient: 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)',
+        subtitle: 'Energy & Cold Drinks'
+      }
+    }
+    // Default fallback
+    return {
+      bg: 'url(https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80)',
+      gradient: 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)',
+      subtitle: 'Explore'
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -166,71 +202,58 @@ export default function Home() {
         {/* Category Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {categories.length > 0 ? (
-            categories.map((cat, i) => (
-              <motion.div
-                key={cat.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-              >
-                <Link href={`/products?category=${cat.id}`}>
-                  <motion.div
-                    whileHover={{ y: -6, scale: 1.01 }}
-                    transition={{ duration: 0.3 }}
-                    className="relative overflow-hidden cursor-pointer"
-                    style={{ aspectRatio: '3/4' }}
-                  >
-                    {/* Background Image */}
-                    <div
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{
-                        backgroundImage: i === 0
-                          ? 'url(https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80)'
-                          : i === 1
-                          ? 'url(https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&q=80)'
-                          : i === 2
-                          ? 'url(https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80)'
-                          : 'url(/bevrages.png)'
-                      }}
-                    />
-                    {/* Overlay Gradient */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background: i === 0
-                          ? 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)'
-                          : i === 1
-                          ? 'linear-gradient(135deg, rgba(60,30,10,0.7) 0%, rgba(120,60,30,0.7) 100%)'
-                          : i === 2
-                          ? 'linear-gradient(135deg, rgba(61,31,13,0.7) 0%, rgba(107,58,31,0.7) 100%)'
-                          : 'linear-gradient(135deg, rgba(28,15,8,0.7) 0%, rgba(61,31,13,0.7) 100%)'
-                      }}
-                    />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
-                      <h3
-                        className="text-3xl font-semibold mb-2"
-                        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#f8f4ef' }}
-                      >
-                        {cat.name}
-                      </h3>
-                      <p
-                        className="text-xs tracking-[0.25em] uppercase mb-8"
-                        style={{ color: '#c9a84c', fontFamily: 'Jost, Inter, sans-serif' }}
-                      >
-                        {i === 0 ? 'Bold & Intense' : i === 1 ? 'Premium Selection' : i === 2 ? 'For Every Occasion' : 'Energy & Cold Drinks'}
-                      </p>
+            categories.map((cat, i) => {
+              const style = getCategoryStyle(cat.name)
+              return (
+                <motion.div
+                  key={cat.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.15 }}
+                >
+                  <Link href={`/products?category=${cat.id}`}>
+                    <motion.div
+                      whileHover={{ y: -6, scale: 1.01 }}
+                      transition={{ duration: 0.3 }}
+                      className="relative overflow-hidden cursor-pointer"
+                      style={{ aspectRatio: '3/4' }}
+                    >
+                      {/* Background Image */}
                       <div
-                        className="px-6 py-2.5 text-xs tracking-[0.2em] uppercase border transition-all duration-300 hover:bg-[#c9a84c] hover:border-[#c9a84c] hover:text-[#1c0f08]"
-                        style={{ borderColor: 'rgba(201,168,76,0.5)', color: '#f8f4ef', fontFamily: 'Jost, Inter, sans-serif' }}
-                      >
-                        Explore
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: style.bg }}
+                      />
+                      {/* Overlay Gradient */}
+                      <div
+                        className="absolute inset-0"
+                        style={{ background: style.gradient }}
+                      />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+                        <h3
+                          className="text-3xl font-semibold mb-2"
+                          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: '#f8f4ef' }}
+                        >
+                          {cat.name}
+                        </h3>
+                        <p
+                          className="text-xs tracking-[0.25em] uppercase mb-8"
+                          style={{ color: '#c9a84c', fontFamily: 'Jost, Inter, sans-serif' }}
+                        >
+                          {style.subtitle}
+                        </p>
+                        <div
+                          className="px-6 py-2.5 text-xs tracking-[0.2em] uppercase border transition-all duration-300 hover:bg-[#c9a84c] hover:border-[#c9a84c] hover:text-[#1c0f08]"
+                          style={{ borderColor: 'rgba(201,168,76,0.5)', color: '#f8f4ef', fontFamily: 'Jost, Inter, sans-serif' }}
+                        >
+                          Explore
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                </Link>
-              </motion.div>
-            ))
+                    </motion.div>
+                  </Link>
+                </motion.div>
+              )
+            })
           ) : (
             // Fallback to static categories if API fails
             [

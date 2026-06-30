@@ -8,4 +8,9 @@ export const prisma =
     log: ['error'],
   })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+// Always set the global to prevent multiple instances in development
+if (process.env.NODE_ENV === 'production') {
+  globalForPrisma.prisma = prisma
+} else {
+  globalForPrisma.prisma = prisma
+}
