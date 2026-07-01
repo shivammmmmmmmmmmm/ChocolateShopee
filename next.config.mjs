@@ -5,17 +5,17 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [
-      // Vercel Blob storage
+      // Cloudinary
       {
         protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
+        hostname: 'res.cloudinary.com',
       },
       // Unsplash (seed images)
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
-      // Any other https image (for pasted URLs in admin)
+      // Generic HTTPS — allows pasted image URLs in admin
       {
         protocol: 'https',
         hostname: '**',

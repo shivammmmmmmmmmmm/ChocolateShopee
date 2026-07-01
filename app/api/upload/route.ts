@@ -1,20 +1,26 @@
-import { put } from '@vercel/blob'
 import { NextRequest, NextResponse } from 'next/server'
+import { uploadToCloudinary } from '@/lib/cloudinary'
 
 export const runtime = 'nodejs'
 
-export async function POST(request: NextRequest) {
-  try {
-    // Check token exists first — gives clear error instead of cryptic crash
-    const token = process.env.BLOB_READ_WRITE_TOKEN
-    if (!token) {
-      console.error('BLOB_READ_WRITE_TOKEN is not set')
-      return NextResponse.json(
-        { error: 'Image storage is not configured. Please contact the admin.' },
-        { status: 503 }
-      )
-    }
+const VALID_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
 
+export async function POST(request: NextRequest) {
+  // Verify Cloudinary env vars are present
+  if (
+    !process.env.CLOUDINARY_CLOUD_NAME ||
+    !process.env.CLOUDINARY_API_KEY ||
+    !process.env.CLOUDINARY_API_SECRET
+  ) {
+    console.error('Cloudinary environment variables are not set')
+    return NextResponse.json(
+      { error: 'Image storage is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.' },
+      { status: 503 }
+    )
+  }
+
+  try {
     const formData = await request.formData()
     const file = formData.get('file') as File | null
 
@@ -22,51 +28,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    // Validate type
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
-    if (!validTypes.includes(file.type)) {
+    if (!VALID_TYPES.includes(file.type)) {
       return NextResponse.json(
         { error: 'Invalid file type. Use JPG, PNG, or WebP.' },
         { status: 400 }
       )
     }
 
-    // Validate size — 5MB max
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_SIZE) {
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 5MB.' },
+        { error: 'File too large. Maximum size is 5 MB.' },
         { status: 400 }
       )
     }
 
-    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase()
-    const safeName = `products/img-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
 
-    const blob = await put(safeName, file, {
-      access: 'public',
-      contentType: file.type,
-      token,
-    })
+    const secureUrl = await uploadToCloudinary(buffer, file.name, file.type)
 
-    return NextResponse.json({ url: blob.url })
+    return NextResponse.json({ url: secureUrl })
   } catch (error: any) {
-    console.error('Upload error:', error?.message || error)
-
-    // Surface token/store errors clearly
-    const msg = error?.message || ''
-    if (msg.includes('token') || msg.includes('unauthorized') || msg.includes('401')) {
-      return NextResponse.json(
-        { error: 'Upload token invalid. Check BLOB_READ_WRITE_TOKEN in Vercel env vars.' },
-        { status: 401 }
-      )
-    }
-    if (msg.includes('store') || msg.includes('not found') || msg.includes('404')) {
-      return NextResponse.json(
-        { error: 'Blob store not found. Make sure the Blob store is connected to this project.' },
-        { status: 404 }
-      )
-    }
-
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 })
+    console.error('Upload error:', error?.message ?? error)
+    return NextResponse.json(
+      { error: 'Upload failed. Please try again.' },
+      { status: 500 }
+    )
   }
 }
