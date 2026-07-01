@@ -103,12 +103,14 @@ export default function AdminDashboard() {
       const data = await res.json()
       if (res.ok) {
         setProductForm(f => ({ ...f, image: data.url }))
-        notify('Image uploaded!')
+        notify('✓ Image uploaded!')
       } else {
-        notify(data.error || 'Upload failed')
+        notify('✗ ' + (data.error || 'Upload failed'))
+        console.error('Upload error:', data.error)
       }
-    } catch {
-      notify('Upload failed')
+    } catch (err) {
+      notify('✗ Network error — upload failed')
+      console.error('Upload network error:', err)
     } finally {
       setUploading(false)
     }
