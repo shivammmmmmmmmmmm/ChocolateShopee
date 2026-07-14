@@ -111,7 +111,7 @@ export default function AdminLoginPage() {
               textAlign: 'center',
             }}
           >
-            Welcome Back
+            Admin Portal
           </h1>
           <p
             style={{
@@ -123,7 +123,7 @@ export default function AdminLoginPage() {
               fontWeight: 300,
             }}
           >
-            Sign in to your admin portal
+            Chocolate Shopee · Nanded · Authorised access only
           </p>
 
           {error && (
@@ -161,7 +161,7 @@ export default function AdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="chocolateshopee@gmail.com"
+                placeholder="admin@example.com"
                 required
                 disabled={loading}
                 style={inputStyle}

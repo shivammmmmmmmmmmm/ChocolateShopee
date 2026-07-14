@@ -139,14 +139,24 @@ export function Footer() {
             className="text-xs tracking-[0.1em]"
             style={{ color: 'rgba(248,244,239,0.4)', fontFamily: 'Jost, Inter, sans-serif' }}
           >
-            © 2025 Chocolate Shoppee. All rights reserved.
+            © 2025 Chocolate Shopee. All rights reserved.
           </p>
-          <p
-            className="text-xs tracking-[0.1em]"
-            style={{ color: 'rgba(248,244,239,0.3)', fontFamily: 'Jost, Inter, sans-serif' }}
-          >
-            23 Years in Business · Nanded&apos;s Chocolate Destination
-          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/privacy-policy"
+              className="text-xs tracking-[0.1em] hover:text-[#c9a84c] transition-colors"
+              style={{ color: 'rgba(248,244,239,0.3)', fontFamily: 'Jost, Inter, sans-serif' }}
+            >
+              Privacy Policy
+            </Link>
+            <span style={{ color: 'rgba(248,244,239,0.15)' }}>·</span>
+            <p
+              className="text-xs tracking-[0.1em]"
+              style={{ color: 'rgba(248,244,239,0.3)', fontFamily: 'Jost, Inter, sans-serif' }}
+            >
+              23 Years in Business · Nanded&apos;s Chocolate Destination
+            </p>
+          </div>
         </div>
       </div>
     </footer>

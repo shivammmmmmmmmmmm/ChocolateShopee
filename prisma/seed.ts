@@ -134,23 +134,19 @@ async function main() {
     }
   })
 
-  // Create default admin account with specified credentials
-  const hashedPassword = await bcryptjs.hash('CS@123', 10)
-  
-  await prisma.admin.upsert({
-    where: { email: 'chocolateshopee@gmail.com' },
-    update: {},
-    create: {
-      email: 'chocolateshopee@gmail.com',
-      password: hashedPassword,
-    }
-  })
-
-  // Delete old admin account if exists
-  try {
-    await prisma.admin.delete({ where: { email: 'admin@luxe.com' } })
-  } catch {
-    // ignore if not found
+  // Create admin account — credentials from environment variables
+  const adminEmail = process.env.ADMIN_EMAIL
+  const adminPassword = process.env.ADMIN_PASSWORD
+  if (!adminEmail || !adminPassword) {
+    console.warn('ADMIN_EMAIL or ADMIN_PASSWORD not set — skipping admin seed')
+  } else {
+    const hashedPassword = await bcryptjs.hash(adminPassword, 10)
+    await prisma.admin.upsert({
+      where: { email: adminEmail },
+      update: { password: hashedPassword },
+      create: { email: adminEmail, password: hashedPassword },
+    })
+    console.log(`Admin account ensured for: ${adminEmail}`)
   }
 
   // Create homepage content
