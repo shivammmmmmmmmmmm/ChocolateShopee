@@ -17,6 +17,10 @@ async function resetAdmin() {
     process.exit(1)
   }
 
+  // Print DB host only — never print secrets
+  const url = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || ''
+  const match = url.match(/@([^/]+)/)
+  console.log('🗄️   Database host:', match ? match[1] : 'unknown')
   console.log(`🔐  Resetting admin credentials for: ${email}`)
 
   const hashedPassword = await bcryptjs.hash(password, 12)
@@ -27,10 +31,16 @@ async function resetAdmin() {
     create: { email, password: hashedPassword },
   })
 
-  console.log(`✅  Admin account updated successfully.`)
+  // Verify the hash works
+  const verified = await bcryptjs.compare(password, admin.password)
+  if (!verified) {
+    console.error('❌  Hash verification failed after update.')
+    process.exit(1)
+  }
+
+  console.log(`✅  Admin account updated and verified.`)
   console.log(`    ID    : ${admin.id}`)
   console.log(`    Email : ${admin.email}`)
-  console.log(`    Use the password from your ADMIN_PASSWORD env variable to log in.`)
 }
 
 resetAdmin()
