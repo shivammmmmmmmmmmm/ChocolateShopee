@@ -46,7 +46,6 @@ export default function AdminDashboard() {
   })
   const [imagePreview, setImagePreview] = useState('')
   const [uploading, setUploading] = useState(false)
-  // Two separate refs: one for gallery/files, one for camera
   const galleryInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
   const [showCatForm, setShowCatForm] = useState(false)
@@ -56,7 +55,7 @@ export default function AdminDashboard() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    fetch('/api/admin/me').then(r => { if (!r.ok) router.push('/admin/login') }).catch(() => router.push('/admin/login'))
+    fetch('/api/admin/me').then(r => { if (!r.ok) router.push('/login') }).catch(() => router.push('/login'))
     fetchAll()
   }, [router])
 
@@ -95,7 +94,6 @@ export default function AdminDashboard() {
   const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) handleImageFile(file)
-    // Reset so same file can be picked again
     e.target.value = ''
   }
 
@@ -142,7 +140,7 @@ export default function AdminDashboard() {
     if (!confirm('Delete this category?')) return
     await fetch(`/api/categories/${id}`, { method: 'DELETE' }); await fetchAll(); notify('✓ Deleted')
   }
-  const handleLogout = async () => { await fetch('/api/admin/logout', { method: 'POST' }); router.push('/admin/login') }
+  const handleLogout = async () => { await fetch('/api/admin/logout', { method: 'POST' }); router.push('/login') }
 
   const tabItems: { key: Tab; icon: string; label: string }[] = [
     { key: 'overview', icon: '📊', label: 'Overview' },
@@ -152,22 +150,19 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ background: '#0e0905', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-
-      {/* ── TOP BAR ── */}
+      {/* TOP BAR */}
       <header style={{ background: '#160c06', borderBottom: '1px solid rgba(201,168,76,0.15)', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, flexShrink: 0 }}>
         <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 17, color: '#c9a84c', fontWeight: 600, whiteSpace: 'nowrap' }}>
           Chocolate Shopee <span style={{ fontFamily: 'Jost', fontSize: 9, color: 'rgba(248,244,239,0.3)', letterSpacing: '0.25em', marginLeft: 6 }}>ADMIN</span>
         </span>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a href="/" target="_blank" style={{ fontFamily: 'Jost', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(248,244,239,0.35)', textDecoration: 'none', display: 'none' }} className="md-show">View Site ↗</a>
           <button onClick={handleLogout} style={{ ...ghostBtn, padding: '7px 12px', fontSize: 11 }}>Logout</button>
         </div>
       </header>
 
-      {/* ── LAYOUT: sidebar on md+, bottom bar on mobile ── */}
+      {/* LAYOUT */}
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-
-        {/* Desktop Sidebar — hidden on mobile via inline media trick (CSS class) */}
+        {/* Desktop Sidebar */}
         <nav className="admin-sidebar" style={{ width: 180, background: '#130a05', borderRight: '1px solid rgba(201,168,76,0.1)', padding: '20px 0', flexShrink: 0 }}>
           {tabItems.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
@@ -183,14 +178,10 @@ export default function AdminDashboard() {
               {t.icon} {t.label}
             </button>
           ))}
-          <div style={{ marginTop: 'auto', padding: '16px 18px', borderTop: '1px solid rgba(201,168,76,0.08)', marginTop: 32 }}>
-            <a href="/" target="_blank" style={{ fontFamily: 'Jost', fontSize: 10, color: 'rgba(248,244,239,0.3)', textDecoration: 'none', display: 'block', marginBottom: 8 }}>↗ View Site</a>
-          </div>
         </nav>
 
         {/* Main scroll area */}
         <main style={{ flex: 1, overflowY: 'auto', padding: '20px 16px 100px', minWidth: 0 }}>
-
           {/* Toast */}
           <AnimatePresence>
             {msg && (
@@ -201,7 +192,7 @@ export default function AdminDashboard() {
             )}
           </AnimatePresence>
 
-          {/* ── OVERVIEW ── */}
+          {/* OVERVIEW */}
           {tab === 'overview' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 28, color: '#f8f4ef', marginBottom: 20, fontWeight: 600 }}>Overview</h2>
@@ -237,7 +228,7 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* ── PRODUCTS ── */}
+          {/* PRODUCTS */}
           {tab === 'products' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, gap: 12 }}>
@@ -247,7 +238,7 @@ export default function AdminDashboard() {
                 <button onClick={openNewProduct} style={{ ...goldBtn, padding: '11px 18px', whiteSpace: 'nowrap' }}>+ Add</button>
               </div>
 
-              {/* ── PRODUCT FORM MODAL ── */}
+              {/* PRODUCT FORM MODAL */}
               <AnimatePresence>
                 {showProductForm && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -257,45 +248,19 @@ export default function AdminDashboard() {
                       initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
                       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
                       style={{ background: '#160c06', border: '1px solid rgba(201,168,76,0.25)', borderBottom: 'none', padding: '24px 20px', width: '100%', maxWidth: 640, maxHeight: '95vh', overflowY: 'auto', borderTopLeftRadius: 16, borderTopRightRadius: 16 }}>
-
-                      {/* Drag handle */}
                       <div style={{ width: 36, height: 4, background: 'rgba(201,168,76,0.3)', borderRadius: 2, margin: '0 auto 20px' }} />
-
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                         <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 24, color: '#f8f4ef', fontWeight: 600 }}>
                           {editingProduct ? 'Edit Product' : 'New Product'}
                         </h3>
                         <button onClick={() => setShowProductForm(false)} style={{ background: 'none', border: 'none', color: 'rgba(248,244,239,0.4)', fontSize: 22, cursor: 'pointer', padding: '4px 8px', lineHeight: 1 }}>✕</button>
                       </div>
-
                       <form onSubmit={saveProduct}>
-                        {/* ── IMAGE UPLOAD ── */}
                         <div style={{ marginBottom: 18 }}>
                           <label style={lbl}>Product Image</label>
-
-                          {/* Hidden inputs — SEPARATE for gallery vs camera */}
-                          {/* Gallery / file picker: NO capture attribute */}
-                          <input
-                            ref={galleryInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFilePick}
-                            style={{ display: 'none' }}
-                          />
-                          {/* Camera only: capture="environment" */}
-                          <input
-                            ref={cameraInputRef}
-                            type="file"
-                            accept="image/*"
-                            capture="environment"
-                            onChange={handleFilePick}
-                            style={{ display: 'none' }}
-                          />
-
-                          {/* Preview / drop zone */}
-                          <div
-                            onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}
-                            onClick={() => galleryInputRef.current?.click()}
+                          <input ref={galleryInputRef} type="file" accept="image/*" onChange={handleFilePick} style={{ display: 'none' }} />
+                          <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleFilePick} style={{ display: 'none' }} />
+                          <div onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} onClick={() => galleryInputRef.current?.click()}
                             style={{ border: '2px dashed rgba(201,168,76,0.3)', padding: '20px 12px', textAlign: 'center', cursor: 'pointer', background: 'rgba(201,168,76,0.03)', position: 'relative', marginBottom: 10 }}>
                             {imagePreview ? (
                               <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -314,32 +279,15 @@ export default function AdminDashboard() {
                               </div>
                             )}
                           </div>
-
-                          {/* Action buttons */}
                           <div style={{ display: 'flex', gap: 8 }}>
-                            <button type="button" onClick={() => galleryInputRef.current?.click()}
-                              style={{ flex: 1, padding: '12px 8px', background: 'none', border: '1px solid rgba(201,168,76,0.3)', color: '#c9a84c', fontFamily: 'Jost', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                              📁 Gallery
-                            </button>
-                            <button type="button" onClick={() => cameraInputRef.current?.click()}
-                              style={{ flex: 1, padding: '12px 8px', background: 'none', border: '1px solid rgba(201,168,76,0.3)', color: '#c9a84c', fontFamily: 'Jost', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                              📸 Camera
-                            </button>
+                            <button type="button" onClick={() => galleryInputRef.current?.click()} style={{ flex: 1, padding: '12px 8px', background: 'none', border: '1px solid rgba(201,168,76,0.3)', color: '#c9a84c', fontFamily: 'Jost', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>📁 Gallery</button>
+                            <button type="button" onClick={() => cameraInputRef.current?.click()} style={{ flex: 1, padding: '12px 8px', background: 'none', border: '1px solid rgba(201,168,76,0.3)', color: '#c9a84c', fontFamily: 'Jost', fontSize: 12, letterSpacing: '0.1em', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>📸 Camera</button>
                             {imagePreview && (
-                              <button type="button" onClick={() => { setImagePreview(''); setProductForm(f => ({ ...f, image: '' })) }}
-                                style={{ padding: '12px 14px', background: 'none', border: '1px solid rgba(239,83,80,0.3)', color: '#ef5350', fontFamily: 'Jost', fontSize: 12, cursor: 'pointer' }}>
-                                ✕
-                              </button>
+                              <button type="button" onClick={() => { setImagePreview(''); setProductForm(f => ({ ...f, image: '' })) }} style={{ padding: '12px 14px', background: 'none', border: '1px solid rgba(239,83,80,0.3)', color: '#ef5350', fontFamily: 'Jost', fontSize: 12, cursor: 'pointer' }}>✕</button>
                             )}
                           </div>
-
-                          {/* URL paste */}
-                          <input style={{ ...inp, fontSize: 13, marginTop: 8 }} placeholder="Or paste image URL…"
-                            value={productForm.image.startsWith('http') && !uploading ? productForm.image : ''}
-                            onChange={e => { setProductForm(f => ({ ...f, image: e.target.value })); setImagePreview(e.target.value) }} />
+                          <input style={{ ...inp, fontSize: 13, marginTop: 8 }} placeholder="Or paste image URL…" value={productForm.image.startsWith('http') && !uploading ? productForm.image : ''} onChange={e => { setProductForm(f => ({ ...f, image: e.target.value })); setImagePreview(e.target.value) }} />
                         </div>
-
-                        {/* Name & Price — stack on mobile */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
                           <div>
                             <label style={lbl}>Name *</label>
@@ -350,17 +298,14 @@ export default function AdminDashboard() {
                             <input style={inp} type="number" step="0.01" min="0" inputMode="decimal" value={productForm.price} onChange={e => setProductForm(f => ({ ...f, price: e.target.value }))} required placeholder="0" />
                           </div>
                         </div>
-
                         <div style={{ marginBottom: 12 }}>
                           <label style={lbl}>Description *</label>
                           <input style={inp} value={productForm.description} onChange={e => setProductForm(f => ({ ...f, description: e.target.value }))} required placeholder="Brief product description" />
                         </div>
-
                         <div style={{ marginBottom: 12 }}>
                           <label style={lbl}>Details (optional)</label>
                           <textarea style={{ ...inp, height: 64, resize: 'vertical' } as React.CSSProperties} value={productForm.details} onChange={e => setProductForm(f => ({ ...f, details: e.target.value }))} placeholder="Weight, flavour, ingredients…" />
                         </div>
-
                         <div style={{ marginBottom: 16 }}>
                           <label style={lbl}>Category *</label>
                           <select style={{ ...inp }} value={productForm.categoryId} onChange={e => setProductForm(f => ({ ...f, categoryId: e.target.value }))} required>
@@ -368,19 +313,15 @@ export default function AdminDashboard() {
                             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                           </select>
                         </div>
-
-                        {/* Toggles */}
                         <div style={{ display: 'flex', gap: 0, marginBottom: 20, borderTop: '1px solid rgba(201,168,76,0.1)', borderLeft: '1px solid rgba(201,168,76,0.1)' }}>
                           {[{ key: 'featured', label: '⭐ Featured' }, { key: 'bestseller', label: '🔥 Best Seller' }, { key: 'inStock', label: '✅ In Stock' }].map(opt => (
-                            <label key={opt.key}
-                              style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer', fontFamily: 'Jost', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: (productForm as any)[opt.key] ? '#c9a84c' : 'rgba(248,244,239,0.4)', background: (productForm as any)[opt.key] ? 'rgba(201,168,76,0.1)' : 'transparent', padding: '12px 4px', borderRight: '1px solid rgba(201,168,76,0.1)', borderBottom: '1px solid rgba(201,168,76,0.1)', textAlign: 'center', transition: 'all 0.15s' }}>
+                            <label key={opt.key} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer', fontFamily: 'Jost', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: (productForm as any)[opt.key] ? '#c9a84c' : 'rgba(248,244,239,0.4)', background: (productForm as any)[opt.key] ? 'rgba(201,168,76,0.1)' : 'transparent', padding: '12px 4px', borderRight: '1px solid rgba(201,168,76,0.1)', borderBottom: '1px solid rgba(201,168,76,0.1)', textAlign: 'center', transition: 'all 0.15s' }}>
                               <input type="checkbox" checked={(productForm as any)[opt.key]} onChange={e => setProductForm(f => ({ ...f, [opt.key]: e.target.checked }))} style={{ display: 'none' }} />
                               <span style={{ fontSize: 18 }}>{(productForm as any)[opt.key] ? '☑' : '☐'}</span>
                               <span>{opt.label}</span>
                             </label>
                           ))}
                         </div>
-
                         <div style={{ display: 'flex', gap: 10 }}>
                           <button type="submit" disabled={saving || uploading} style={{ ...goldBtn, flex: 1, padding: '14px 0', fontSize: 13 }}>
                             {saving ? 'Saving…' : editingProduct ? 'Update' : 'Create Product'}
@@ -427,7 +368,7 @@ export default function AdminDashboard() {
             </motion.div>
           )}
 
-          {/* ── CATEGORIES ── */}
+          {/* CATEGORIES */}
           {tab === 'categories' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
@@ -491,11 +432,10 @@ export default function AdminDashboard() {
               </div>
             </motion.div>
           )}
-
         </main>
       </div>
 
-      {/* ── MOBILE BOTTOM TAB BAR ── */}
+      {/* Mobile bottom tab bar */}
       <nav className="admin-bottom-nav" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#130a05', borderTop: '1px solid rgba(201,168,76,0.2)', display: 'flex', zIndex: 100, paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {tabItems.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}

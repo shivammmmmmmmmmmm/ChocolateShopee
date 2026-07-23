@@ -52,18 +52,18 @@ export default function PrivacyPolicyPage() {
               title: 'Google Maps',
               body: 'Our contact page embeds a Google Maps iframe to display our store location. Google Maps is subject to Google\'s privacy policy. We do not collect any data from this embed.',
             },
-            {
-              title: 'Cookies',
-              body: 'This website uses a single session cookie exclusively for the shop owner\'s admin panel. No tracking cookies, advertising cookies, or analytics cookies are used. Visitors browsing the public website are not tracked.',
-            },
+              {
+                title: 'Cookies',
+                body: 'This website does not use tracking cookies, advertising cookies, or analytics cookies. Visitors browsing the public website are not tracked.',
+              },
             {
               title: 'Third-Party Services',
               body: 'We use Google Fonts for typography (fonts.googleapis.com) and Cloudinary for product image storage (res.cloudinary.com). These services operate under their own privacy policies.',
             },
-            {
-              title: 'Admin Access',
-              body: 'This website has a backend admin panel used exclusively by the shop owner to manage the product catalogue. This panel is not accessible to the public and requires authentication.',
-            },
+              {
+                title: 'Data Security',
+                body: 'We implement appropriate security measures to protect any information collected through our WhatsApp ordering system. Product management is handled through a separate, secure administration system.',
+              },
             {
               title: 'Contact',
               body: 'For any privacy-related questions, contact us at Bhagya Nager T point, Nanded, Maharashtra — or via WhatsApp at +91 91588 82111.',

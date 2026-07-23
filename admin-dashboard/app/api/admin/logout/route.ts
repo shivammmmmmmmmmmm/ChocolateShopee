@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
     cookieStore.delete('admin_session')
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('[v0] Logout error:', error)
-    return NextResponse.json(
-      { error: 'Failed to logout' },
-      { status: 500 }
-    )
+    console.error('Logout error:', error)
+    return NextResponse.json({ error: 'Failed to logout' }, { status: 500 })
   }
 }
